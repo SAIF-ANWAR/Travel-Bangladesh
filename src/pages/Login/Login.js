@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Form } from 'react-bootstrap';
-import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useSendPasswordResetEmail, useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import auth from '../../firebase.init';
 
 import SocialLogin from './SocialLogin';
@@ -22,6 +22,7 @@ const Login = () => {
         event.preventDefault()
         const email = event.target.email?.value
         const password = event.target.password?.value
+
         signInWithEmailAndPassword(email, password)
 
 
@@ -29,6 +30,17 @@ const Login = () => {
     if (user) {
         navigate(from, { replace: true })
         // console.log(user)
+    }
+    const [sendPasswordResetEmail, sending, resetError] = useSendPasswordResetEmail(auth);
+    const resetPassword = async (event) => {
+        const email = event.target.email?.value
+        if (email) {
+            await sendPasswordResetEmail(email)
+            console.log(email)
+        }
+        else {
+            alert('please enter your email address')
+        }
     }
 
     return (
@@ -47,9 +59,9 @@ const Login = () => {
                         <Form.Control type="password" name="password" placeholder="Password" />
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="formBasicCheckbox">
-                        <div className='d-flex justify-content-between'>
+                        <div className='d-flex justify-content-between align-items-center'>
                             <Form.Check type="checkbox" label="Remember me" />
-                            <p><small style={{ color: '#F9A51A' }} >Forgot Password</small></p>
+                            <p><Button className=' text-dark text-decoration-none' variant="link" onClick={resetPassword} ><span style={{ color: '#F9A51A' }}>Forgot Password</span></Button></p>
                         </div>
                     </Form.Group>
                     <div className="border-0 d-grid">

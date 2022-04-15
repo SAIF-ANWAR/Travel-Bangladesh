@@ -5,7 +5,7 @@ const Destination = () => {
     return (
         <div>
             <h1>Destination</h1>
-            <Booking></Booking>
+
         </div>
     );
 };
